@@ -8,12 +8,14 @@ const flagDefinitionBase = {
 
 function App() {
   const [flagKey, setFlagKey] = useState<string>('')
+  const [flagState, setFlagState] = useState<boolean>(false)
+
   const [flagDefinition, setFlagDefinition] = useState(flagDefinitionBase)
 
   const updateFlagKey = (event: ChangeEvent<HTMLInputElement>) => {
     setFlagKey(oldFlagKey => {
-      const definition = JSON.parse(JSON.stringify(flagDefinition))
       const newFlagKey = event.target.value
+      const definition = JSON.parse(JSON.stringify(flagDefinition))
       if (!oldFlagKey) {
         definition['flags'][newFlagKey] = {
           "state": flagState ? 'ENABLED' : 'DISABLED'
@@ -28,8 +30,6 @@ function App() {
       return newFlagKey
     })
   }
-
-  const [flagState, setFlagState] = useState<boolean>(false)
 
   const updateFlagState = () => {
     setFlagState(oldFlagState => {
@@ -48,26 +48,31 @@ function App() {
   return (
     <>
       <h1>flagd ui</h1>
-      <div>
-        <label>Flag Key</label>
-        <input
-          value={flagKey}
-          onChange={updateFlagKey}/>
+      <div style={{display: 'flex', flexDirection: 'row', gap: '1%'}}>
+        <div>
+          <div>
+            <label htmlFor='flagKey'>Flag Key</label>
+            <input
+              id='flagKey'
+              value={flagKey}
+              onChange={updateFlagKey} />
+          </div>
+          <div>
+            <label>State</label>
+            <input
+              type='checkbox'
+              checked={flagState}
+              onChange={updateFlagState} />
+          </div>
+        </div>
+        <div>
+          <textarea
+            rows={10}
+            cols={50}
+            readOnly
+            value={JSON.stringify(flagDefinition)} />
+        </div>
       </div>
-      <br/>
-      <div>
-        <label>State</label>
-        <input
-          type='checkbox'
-          checked={flagState}
-          onChange={updateFlagState} />
-      </div>
-      <br/>
-      <textarea
-        rows={10}
-        cols={50}
-        readOnly
-        value={JSON.stringify(flagDefinition)}/>
     </>
   )
 }
