@@ -15,7 +15,9 @@ function App() {
       const definition = JSON.parse(JSON.stringify(flagDefinition))
       const newFlagKey = event.target.value
       if (!oldFlagKey) {
-        definition['flags'][newFlagKey] = {}
+        definition['flags'][newFlagKey] = {
+          "state": flagState ? 'ENABLED' : 'DISABLED'
+        }
       } else if (!newFlagKey) {
         delete definition.flags[oldFlagKey]
       } else {
@@ -27,6 +29,22 @@ function App() {
     })
   }
 
+  const [flagState, setFlagState] = useState<boolean>(false)
+
+  const updateFlagState = () => {
+    setFlagState(oldFlagState => {
+      const newFlagState = !oldFlagState
+      const definition = JSON.parse(JSON.stringify(flagDefinition))
+      if (flagKey) {
+        definition['flags'][flagKey] = {
+          "state": newFlagState ? 'ENABLED' : 'DISABLED'
+        }
+        setFlagDefinition(definition)
+      }
+      return newFlagState
+    })
+  }
+
   return (
     <>
       <h1>flagd ui</h1>
@@ -35,6 +53,14 @@ function App() {
         <input
           value={flagKey}
           onChange={updateFlagKey}/>
+      </div>
+      <br/>
+      <div>
+        <label>State</label>
+        <input
+          type='checkbox'
+          checked={flagState}
+          onChange={updateFlagState} />
       </div>
       <br/>
       <textarea
