@@ -13,7 +13,6 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v3.9.3
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          folder: ./dist
