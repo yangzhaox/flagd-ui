@@ -3,20 +3,28 @@ import './App.css'
 
 const flagDefinitionBase = {
   "$schema": "https://flagd.dev/schema/v0/flags.json",
-  "flags": {
-    "flagKey": ""
-  }
+  "flags": {}
 }
 
 function App() {
-  const [flagKey, setFlagKey] = useState('')
+  const [flagKey, setFlagKey] = useState<string>('')
   const [flagDefinition, setFlagDefinition] = useState(flagDefinitionBase)
 
-  const handleFlagKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFlagKey(event.target.value)
-    const definition = JSON.parse(JSON.stringify(flagDefinitionBase))
-    definition.flags.flagKey = event.target.value
-    setFlagDefinition(definition)
+  const updateFlagKey = (event: ChangeEvent<HTMLInputElement>) => {
+    setFlagKey(oldFlagKey => {
+      const definition = JSON.parse(JSON.stringify(flagDefinition))
+      const newFlagKey = event.target.value
+      if (!oldFlagKey) {
+        definition['flags'][newFlagKey] = {}
+      } else if (!newFlagKey) {
+        delete definition.flags[oldFlagKey]
+      } else {
+        definition['flags'][newFlagKey] = definition['flags'][oldFlagKey]
+        delete definition.flags[oldFlagKey]
+      }
+      setFlagDefinition(definition)
+      return newFlagKey
+    })
   }
 
   return (
@@ -26,12 +34,13 @@ function App() {
         <label>Flag Key</label>
         <input
           value={flagKey}
-          onChange={handleFlagKeyChange}/>
+          onChange={updateFlagKey}/>
       </div>
       <br/>
       <textarea
         rows={10}
         cols={50}
+        readOnly
         value={JSON.stringify(flagDefinition)}/>
     </>
   )
