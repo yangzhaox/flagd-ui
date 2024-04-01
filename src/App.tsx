@@ -8,7 +8,7 @@ const flagDefinitionBase = {
 
 function App() {
   const [flagKey, setFlagKey] = useState<string>('')
-  const [flagState, setFlagState] = useState<boolean>(false)
+  const [state, setState] = useState<boolean>(false)
 
   const [flagDefinition, setFlagDefinition] = useState(flagDefinitionBase)
 
@@ -19,7 +19,7 @@ function App() {
       const flags = definition['flags'] as any
       if (!oldFlagKey) {
         flags[newFlagKey] = {
-          "state": flagState ? 'ENABLED' : 'DISABLED'
+          "state": state ? 'ENABLED' : 'DISABLED'
         }
       } else if (!newFlagKey) {
         delete flags[oldFlagKey]
@@ -32,18 +32,18 @@ function App() {
     })
   }
 
-  const updateFlagState = () => {
-    setFlagState(oldFlagState => {
-      const newFlagState = !oldFlagState
+  const updateState = () => {
+    setState(oldState => {
+      const newState = !oldState
       const definition = structuredClone(flagDefinition)
       const flags = definition['flags'] as any
       if (flagKey) {
         flags[flagKey] = {
-          "state": newFlagState ? 'ENABLED' : 'DISABLED'
+          "state": newState ? 'ENABLED' : 'DISABLED'
         }
         setFlagDefinition(definition)
       }
-      return newFlagState
+      return newState
     })
   }
 
@@ -63,8 +63,8 @@ function App() {
             <label>State</label>
             <input
               type='checkbox'
-              checked={flagState}
-              onChange={updateFlagState} />
+              checked={state}
+              onChange={updateState} />
           </div>
         </div>
         <div>
