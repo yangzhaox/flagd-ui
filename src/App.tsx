@@ -15,16 +15,17 @@ function App() {
   const updateFlagKey = (event: ChangeEvent<HTMLInputElement>) => {
     setFlagKey(oldFlagKey => {
       const newFlagKey = event.target.value
-      const definition = JSON.parse(JSON.stringify(flagDefinition))
+      const definition = structuredClone(flagDefinition)
+      const flags = definition['flags'] as any
       if (!oldFlagKey) {
-        definition['flags'][newFlagKey] = {
+        flags[newFlagKey] = {
           "state": flagState ? 'ENABLED' : 'DISABLED'
         }
       } else if (!newFlagKey) {
-        delete definition.flags[oldFlagKey]
+        delete flags[oldFlagKey]
       } else {
-        definition['flags'][newFlagKey] = definition['flags'][oldFlagKey]
-        delete definition.flags[oldFlagKey]
+        flags[newFlagKey] = flags[oldFlagKey]
+        delete flags[oldFlagKey]
       }
       setFlagDefinition(definition)
       return newFlagKey
@@ -34,9 +35,10 @@ function App() {
   const updateFlagState = () => {
     setFlagState(oldFlagState => {
       const newFlagState = !oldFlagState
-      const definition = JSON.parse(JSON.stringify(flagDefinition))
+      const definition = structuredClone(flagDefinition)
+      const flags = definition['flags'] as any
       if (flagKey) {
-        definition['flags'][flagKey] = {
+        flags[flagKey] = {
           "state": newFlagState ? 'ENABLED' : 'DISABLED'
         }
         setFlagDefinition(definition)
