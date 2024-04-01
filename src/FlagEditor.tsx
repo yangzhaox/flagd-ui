@@ -8,16 +8,15 @@ export default function FlagEditor(props: { flagDefinition: any, setFlagDefiniti
     setFlagKey(oldFlagKey => {
       const newFlagKey = event.target.value
       const definition = structuredClone(props.flagDefinition)
-      const flags = definition['flags'] as any
       if (!oldFlagKey) {
-        flags[newFlagKey] = {
+        definition[newFlagKey] = {
           "state": state ? 'ENABLED' : 'DISABLED'
         }
       } else if (!newFlagKey) {
-        delete flags[oldFlagKey]
+        delete definition[oldFlagKey]
       } else {
-        flags[newFlagKey] = flags[oldFlagKey]
-        delete flags[oldFlagKey]
+        definition[newFlagKey] = definition[oldFlagKey]
+        delete definition[oldFlagKey]
       }
       props.setFlagDefinition(definition)
       return newFlagKey
@@ -28,9 +27,8 @@ export default function FlagEditor(props: { flagDefinition: any, setFlagDefiniti
     setState(oldState => {
       const newState = !oldState
       const definition = structuredClone(props.flagDefinition)
-      const flags = definition['flags'] as any
       if (flagKey) {
-        flags[flagKey] = {
+        definition[flagKey] = {
           "state": newState ? 'ENABLED' : 'DISABLED'
         }
         props.setFlagDefinition(definition)

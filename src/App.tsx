@@ -4,10 +4,7 @@ import FlagViewer from './FlagViewer'
 import './App.css'
 
 function App() {
-  const [flagDefinition, setFlagDefinition] = useState({
-    "$schema": "https://flagd.dev/schema/v0/flags.json",
-    "flags": {}
-  })
+  const [flagDefinition, setFlagDefinition] = useState({})
 
   return (
     <>
