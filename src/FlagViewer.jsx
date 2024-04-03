@@ -1,10 +1,10 @@
-export default function FlagViewer(props: { flagDefinition: any }) {
+export default function FlagViewer({ flagDefinition }) {
 
   const definition = {
     "$schema": "https://flagd.dev/schema/v0/flags.json",
     "flags": {}
   }
-  definition['flags'] = props.flagDefinition
+  definition['flags'] = flagDefinition
 
   return (
     <>

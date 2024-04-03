@@ -5,7 +5,7 @@ import './App.css'
 
 function App() {
   const [flagDefinition, setFlagDefinition] = useState({})
-
+  
   return (
     <>
       <h1>flagd ui</h1>

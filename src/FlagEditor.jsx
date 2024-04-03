@@ -1,13 +1,13 @@
-import { useState, ChangeEvent } from 'react'
+import { useState } from 'react'
 
-export default function FlagEditor(props: { flagDefinition: any, setFlagDefinition: any }) {
-  const [flagKey, setFlagKey] = useState<string>('')
-  const [state, setState] = useState<boolean>(false)
+export default function FlagEditor({ flagDefinition, setFlagDefinition }) {
+  const [flagKey, setFlagKey] = useState('')
+  const [state, setState] = useState(false)
 
-  const updateFlagKey = (event: ChangeEvent<HTMLInputElement>) => {
+  const updateFlagKey = (event) => {
     setFlagKey(oldFlagKey => {
       const newFlagKey = event.target.value
-      const definition = structuredClone(props.flagDefinition)
+      const definition = structuredClone(flagDefinition)
       if (!oldFlagKey) {
         definition[newFlagKey] = {
           "state": state ? 'ENABLED' : 'DISABLED'
@@ -18,7 +18,7 @@ export default function FlagEditor(props: { flagDefinition: any, setFlagDefiniti
         definition[newFlagKey] = definition[oldFlagKey]
         delete definition[oldFlagKey]
       }
-      props.setFlagDefinition(definition)
+      setFlagDefinition(definition)
       return newFlagKey
     })
   }
@@ -26,12 +26,12 @@ export default function FlagEditor(props: { flagDefinition: any, setFlagDefiniti
   const updateState = () => {
     setState(oldState => {
       const newState = !oldState
-      const definition = structuredClone(props.flagDefinition)
+      const definition = structuredClone(flagDefinition)
       if (flagKey) {
         definition[flagKey] = {
           "state": newState ? 'ENABLED' : 'DISABLED'
         }
-        props.setFlagDefinition(definition)
+        setFlagDefinition(definition)
       }
       return newState
     })
