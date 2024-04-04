@@ -4,3 +4,9 @@
   padding: 2rem;
   text-align: left;
 }
+
+.container {
+  display: flex;
+  flex-direction: row; 
+  gap: 1%
+}

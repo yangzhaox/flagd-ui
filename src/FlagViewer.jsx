@@ -1,10 +1,7 @@
-export default function FlagViewer({ flagDefinition }) {
+import { useFormContext } from "react-hook-form"
 
-  const definition = {
-    "$schema": "https://flagd.dev/schema/v0/flags.json",
-    "flags": {}
-  }
-  definition['flags'] = flagDefinition
+export default function FlagViewer() {
+  const { watch } = useFormContext()
 
   return (
     <>
@@ -12,7 +9,7 @@ export default function FlagViewer({ flagDefinition }) {
         rows={10}
         cols={50}
         readOnly
-        value={JSON.stringify(definition)} />
+        value={JSON.stringify(watch())} />
     </>
   )
 }
