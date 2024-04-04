@@ -14,6 +14,14 @@ export default function FlagForm() {
                     <option value="DISABLED">Disabled</option>
                     <option value="ENABLED">Enabled</option>
                 </select>
+                <br />
+                <label htmlFor="type">Type</label>
+                <select id="type" {...register("type")}>
+                    <option value="boolean">Boolean</option>
+                    <option value="string">String</option>
+                    <option value="number">Number</option>
+                    <option value="object">JSON</option>
+                </select>
             </form>
         </>
     )
