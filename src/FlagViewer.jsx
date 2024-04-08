@@ -6,6 +6,7 @@ export default function FlagViewer() {
   return (
     <>
       <textarea
+        id="viewer"
         rows={10}
         cols={50}
         readOnly
