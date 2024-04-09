@@ -1,7 +1,12 @@
 import { useFormContext } from "react-hook-form"
+import flagFormConverter from "./flagFormConverter"
 
 export default function FlagViewer() {
   const { watch } = useFormContext()
+
+  const formData = watch()
+
+  const convertedFormData = flagFormConverter(formData)
 
   return (
     <>
@@ -10,7 +15,7 @@ export default function FlagViewer() {
         rows={10}
         cols={50}
         readOnly
-        value={JSON.stringify(watch())} />
+        value={JSON.stringify(convertedFormData)} />
     </>
   )
 }

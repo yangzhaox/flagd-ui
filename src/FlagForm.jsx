@@ -9,8 +9,8 @@ export default function FlagForm() {
                 <label htmlFor="flagKey">Flag Key</label>
                 <input id="flagKey" {...register("flagKey")} />
                 <br />
-                <label htmlFor="enabled">State</label>
-                <input id="enabled" type="checkbox" {...register("enabled")} />
+                <label htmlFor="state">State</label>
+                <input id="state" type="checkbox" {...register("state")} />
                 <br />
                 <label htmlFor="type">Type</label>
                 <select id="type" {...register("type")}>
