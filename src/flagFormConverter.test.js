@@ -1,25 +1,49 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, xit, expect } from 'vitest'
 import flagFormConverter from "./flagFormConverter"
 
 describe("flagFormConverter", () => {
-    it("should set flagkey to empty string if undefined", () => {
-        const actual = flagFormConverter({ flagKey: undefined })
-        expect(actual.flagKey).toBe("")
+    const testFlagKey = "test-feature"
+
+    it("should return empty object if flagKey is empty", () => {
+        const actual = flagFormConverter({ flagKey: "" })
+        expect(actual).toStrictEqual({})
     })
 
-    it("should preserve flagkey if not undefined", () => {
-        const actual = flagFormConverter({ flagKey: "test-feature" })
-        expect(actual.flagKey).toBe("test-feature")
+    it("should return flagKey in object if flagKey is not empty", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey })
+        expect(actual).toHaveProperty(testFlagKey)
     })
 
     it("should convert state from true to ENABLED", () => {
-        const actual = flagFormConverter({ state: true })
-        expect(actual.state).toBe("ENABLED")
+        const actual = flagFormConverter({ flagKey: testFlagKey, state: true })
+        expect(actual[testFlagKey].state).toBe("ENABLED")
     })
 
     it("should convert state from false to DISABLED", () => {
-        const actual = flagFormConverter({ state: false })
-        expect(actual.state).toBe("DISABLED")
+        const actual = flagFormConverter({ flagKey: testFlagKey, state: false })
+        expect(actual[testFlagKey].state).toBe("DISABLED")
+    })
+
+    it("should return variants as empty object", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, variants: []})
+        expect(actual[testFlagKey].variants).toStrictEqual({})
+    })
+
+    it("should return 1 variant", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, 
+            variants: [{ name: "true", value: true }]})
+        expect(actual[testFlagKey].variants).toStrictEqual({ true: true })
+    })
+
+    it("should return 2 variants", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, 
+            variants: [{ name: "true", value: true }, { name: "false", value: false }]})
+        expect(actual[testFlagKey].variants).toStrictEqual({ true: true, false: false })
+    })
+
+    it("should return defaultVariant", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, defaultVariant: "true" })
+        expect(actual[testFlagKey].defaultVariant).toBe("true")
     })
 })
 

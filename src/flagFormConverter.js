@@ -1,6 +1,14 @@
 export default function flagFormConverter(formData) {
+    if (!formData.flagKey) return {}
+
     return {
-        flagKey: formData.flagKey ? formData.flagKey : "",
-        state: formData.state ? "ENABLED" : "DISABLED"
+        [formData.flagKey]: {
+            state: formData.state ? "ENABLED" : "DISABLED",
+            variants: formData.variants?.reduce((acc, v) => {
+                acc[v.name] = v.value
+                return acc
+            }, {}),
+            defaultVariant: formData.defaultVariant
+        }
     }
 }
