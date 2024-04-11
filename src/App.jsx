@@ -3,7 +3,7 @@ import "./App.css"
 import flagFormConverter from "./flagFormConverter"
 
 function App() {
-  const [flagKey, setFlagKey] = useState("")
+  const [flagKey, setFlagKey] = useState("test-feature")
   const [state, setState] = useState(false)
   const [type, setType] = useState("boolean")
   const [variants, setVariants] = useState([
@@ -11,6 +11,30 @@ function App() {
     { name: "false", value: false }
   ])
   const [defaultVariant, setDefaultVariant] = useState("true")
+
+  const handleTypeChange = (newType) => {
+    setType(newType)
+    setVariants(oldVariants => {
+      const newVariants = oldVariants.map(v => {
+        let newValue
+        switch (newType) {
+          case "boolean":
+            newValue = Boolean(v.value)
+            break
+          case "string":
+            newValue = String(v.value)
+            break
+          case "number":
+            newValue = 0
+            break
+          default:
+            newValue = v.value
+        }
+        return { ...v, value: newValue }
+      })
+      return newVariants
+    })
+  }
 
   const handleVariantChange = (index, key, value) => {
     const newVariants = variants.map((variant, i) => {
@@ -53,7 +77,7 @@ function App() {
       <div className="container">
         <div>
           <div>
-            <label htmlFor="flagKey">FlagKey</label>
+            <label htmlFor="flagKey">Flag Key</label>
             <input id="flagKey" value={flagKey} onChange={(e) => setFlagKey(e.target.value)} />
           </div>
           <div>
@@ -62,11 +86,10 @@ function App() {
           </div>
           <div>
             <label htmlFor="type">Type</label>
-            <select id="type" value={type} onChange={(e) => setType(e.target.value)}>
+            <select id="type" value={type} onChange={(e) => handleTypeChange(e.target.value)}>
               <option value="boolean">boolean</option>
               <option value="string">string</option>
               <option value="number">number</option>
-              <option value="json">JSON</option>
             </select>
           </div>
           <div>
@@ -75,9 +98,19 @@ function App() {
                 {variants.map((variant, index) => (
                   <div key={index}>
                     <input id={`v-name-${index}`} placeholder="Name" value={variant.name}
-                      onChange={(e) => handleVariantChange(index, 'name', e.target.value)} />
-                    <input id={`v-value-${index}`} placeholder="Value" value={variant.value}
-                      onChange={(e) => handleVariantChange(index, 'value', e.target.value)} />
+                      onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
+                    {type === "boolean" ?
+                      <select id={`v-value-${index}`} value={variant.value.toString()} 
+                        onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
+                        <option value="true">true</option>
+                        <option value="false">false</option>
+                      </select> : null}
+                    {type === "string" ?
+                      <input id={`v-value-${index}`} placeholder="Value" value={variant.value} 
+                        onChange={(e) => handleVariantChange(index, "value", e.target.value)}/> : null}
+                    {type === "number" ?
+                      <input id={`v-value-${index}`} type="number" value={variant.value} 
+                        onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))}/> : null}
                     <button id="remove" onClick={() => removeVariant(index)}>Remove</button>
                   </div>
                 ))}
