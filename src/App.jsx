@@ -75,7 +75,7 @@ function App() {
     <>
       <h1>flagd ui</h1>
       <div className="container">
-        <div>
+        <div className="left">
           <div>
             <label htmlFor="flagKey">Flag Key</label>
             <input id="flagKey" value={flagKey} onChange={(e) => setFlagKey(e.target.value)} />
