@@ -10,30 +10,35 @@ function App() {
     { name: "true", value: true },
     { name: "false", value: false }
   ])
-  const [defaultVariant, setDefaultVariant] = useState("true")
+  const [defaultVariant, setDefaultVariant] = useState("false")
 
   const handleTypeChange = (newType) => {
     setType(newType)
-    setVariants(oldVariants => {
-      const newVariants = oldVariants.map(v => {
-        let newValue
-        switch (newType) {
-          case "boolean":
-            newValue = Boolean(v.value)
-            break
-          case "string":
-            newValue = String(v.value)
-            break
-          case "number":
-            newValue = 0
-            break
-          default:
-            newValue = v.value
-        }
-        return { ...v, value: newValue }
-      })
-      return newVariants
-    })
+    if (newType === "boolean") {
+      setVariants([
+        { name: "true", value: true },
+        { name: "false", value: false }
+      ])
+      setDefaultVariant("false")
+    } else if (newType === "string") {
+      setVariants([
+        { name: "foo", value: "foo"},
+        { name: "bar", value: "bar"}
+      ])
+      setDefaultVariant("foo")
+    } else if (newType === "number") {
+      setVariants([
+        { name: "1", value: 1},
+        { name: "2", value: 2}
+      ])
+      setDefaultVariant("1")
+    } else if (newType === "object") {
+      setVariants([
+        { name: "foo", value: { foo: "foo" }},
+        { name: "bar", value: { bar: "bar" }}
+      ])
+      setDefaultVariant("foo")
+    }
   }
 
   const handleVariantChange = (index, key, value) => {
@@ -44,10 +49,20 @@ function App() {
       return variant
     })
     setVariants(newVariants)
+    newVariants.length === 1 ? setDefaultVariant(newVariants[0].name) : null
   }
 
   const addVariant = () => {
-    const newVariant = { name: "", value: "" }
+    const newVariant = { name: "" }
+    if (type === "boolean") {
+      newVariant.value = false
+    } else if (type === "string") {
+      newVariant.value = ""
+    } else if (type === "number") {
+      newVariant.value = 0
+    } else if (type === "object") {
+      newVariant.value = {}
+    }
     setVariants([...variants, newVariant])
   }
 
@@ -90,31 +105,35 @@ function App() {
               <option value="boolean">boolean</option>
               <option value="string">string</option>
               <option value="number">number</option>
+              <option value="object">object</option>
             </select>
           </div>
           <div>
             <label>Variants
               <div>
                 {variants.map((variant, index) => (
-                  <div key={index}>
-                    <input id={`v-name-${index}`} placeholder="Name" value={variant.name}
+                  <div key={`variant${index}`}>
+                    <input id={`variant${index}Name`} placeholder="Name" value={variant.name}
                       onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
                     {type === "boolean" ?
-                      <select id={`v-value-${index}`} value={variant.value.toString()} 
+                      <select id={`variant${index}Value`} value={variant.value.toString()} 
                         onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
                         <option value="true">true</option>
                         <option value="false">false</option>
                       </select> : null}
                     {type === "string" ?
-                      <input id={`v-value-${index}`} placeholder="Value" value={variant.value} 
+                      <input id={`variant${index}Value`} placeholder="Value" value={variant.value} 
                         onChange={(e) => handleVariantChange(index, "value", e.target.value)}/> : null}
                     {type === "number" ?
-                      <input id={`v-value-${index}`} type="number" value={variant.value} 
+                      <input id={`variant${index}Value`} type="number" value={variant.value} 
                         onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))}/> : null}
-                    <button id="remove" onClick={() => removeVariant(index)}>Remove</button>
+                    {type === "object" ?
+                      <input id={`variant${index}Value`} value={JSON.stringify(variant.value)} 
+                        onChange={(e) => handleVariantChange(index, "value", JSON.parse(e.target.value))}/> : null}
+                    <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
                   </div>
                 ))}
-                <button id="add" onClick={addVariant}>Add Variant</button>
+                <button id="addVariant" onClick={addVariant}>Add Variant</button>
               </div>
             </label>
           </div>
