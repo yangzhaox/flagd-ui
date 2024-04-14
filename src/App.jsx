@@ -34,8 +34,8 @@ function App() {
       setDefaultVariant("1")
     } else if (newType === "object") {
       setVariants([
-        { name: "foo", value: { foo: "foo" }},
-        { name: "bar", value: { bar: "bar" }}
+        { name: "foo", value: JSON.stringify({ foo: "foo" })},
+        { name: "bar", value: JSON.stringify({ bar: "bar" })}
       ])
       setDefaultVariant("foo")
     }
@@ -61,7 +61,7 @@ function App() {
     } else if (type === "number") {
       newVariant.value = 0
     } else if (type === "object") {
-      newVariant.value = {}
+      newVariant.value = JSON.stringify({})
     }
     setVariants([...variants, newVariant])
   }
@@ -128,8 +128,8 @@ function App() {
                       <input id={`variant${index}Value`} type="number" value={variant.value} 
                         onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))}/> : null}
                     {type === "object" ?
-                      <input id={`variant${index}Value`} value={JSON.stringify(variant.value)} 
-                        onChange={(e) => handleVariantChange(index, "value", JSON.parse(e.target.value))}/> : null}
+                      <input id={`variant${index}Value`} value={variant.value} 
+                        onChange={(e) => handleVariantChange(index, "value", e.target.value)}/> : null}
                     <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
                   </div>
                 ))}

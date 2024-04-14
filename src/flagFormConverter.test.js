@@ -45,5 +45,7 @@ describe("flagFormConverter", () => {
         const actual = flagFormConverter({ flagKey: testFlagKey, defaultVariant: "true" })
         expect(actual[testFlagKey].defaultVariant).toBe("true")
     })
+
+    //TODO: add tests for object type
 })
 
