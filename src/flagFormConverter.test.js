@@ -41,11 +41,22 @@ describe("flagFormConverter", () => {
         expect(actual[testFlagKey].variants).toStrictEqual({ true: true, false: false })
     })
 
+    it("should return json object if variant value is valid json", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, type: "object",
+            variants: [{ name: "foo", value: "{}" }]})
+        expect(actual[testFlagKey].variants["foo"]).toStrictEqual({})   
+    })
+
+    it("should return empty string if variant value is not valid json", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, type: "object",
+        variants: [{ name: "foo", value: "{a}" }]})
+        expect(actual[testFlagKey].variants["foo"]).toStrictEqual("") 
+    })
+
     it("should return defaultVariant", () => {
         const actual = flagFormConverter({ flagKey: testFlagKey, defaultVariant: "true" })
         expect(actual[testFlagKey].defaultVariant).toBe("true")
     })
 
-    //TODO: add tests for object type
 })
 
