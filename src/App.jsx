@@ -10,7 +10,11 @@ function App() {
     { name: "true", value: true },
     { name: "false", value: false }
   ])
+  const [condition, setCondition] = useState({
+    name: "", operator: "ends_with", value: ""
+  })
   const [defaultVariant, setDefaultVariant] = useState("false")
+  const [targetVariant, setTargetVariant] = useState("true")
 
   const handleTypeChange = (newType) => {
     setType(newType)
@@ -81,6 +85,8 @@ function App() {
       type,
       variants,
       defaultVariant,
+      condition,
+      targetVariant
     }
     const convertedJson = flagFormConverter(json)
     return JSON.stringify(convertedJson, null, 2)
@@ -139,11 +145,40 @@ function App() {
           </div>
           <div>
             <label htmlFor="defaultVariant">Default Variant</label>
-            <select id="defaultVariant" value={defaultVariant} onChange={(e) => setDefaultVariant(e.target.value)}>
+            <select id="defaultVariant"
+                    value={defaultVariant} 
+                    onChange={(e) => setDefaultVariant(e.target.value)}>
               {variants.filter(variant => variant.name).map((variant, index) => (
                 <option key={`variant-${index}`} value={variant.name}>{variant.name}</option>
               ))}
             </select>
+          </div>
+          <div>
+            <label>Targeting<br/>
+              <label>If
+                <input id="conditionName" placeholder="Name" 
+                       value={condition.name}
+                       onChange={(e) => setCondition({ ...condition, name: e.target.value })} />
+                <select id="operator" 
+                        value={condition.operator}
+                        onChange={(e) => setCondition({ ...condition, operator: e.target.value })}>
+                  <option value="ends_with">Ends with</option>
+                </select>
+                <input id="conditionValue" placeholder="Value"
+                       value={condition.value}
+                       onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
+              </label>
+              <br/>
+              <label>Serve
+                <select id="targetVariant" 
+                        value={targetVariant} 
+                        onChange={(e) => setTargetVariant(e.target.value)}>
+                  {variants.filter(variant => variant.name).map((variant, index) => (
+                    <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
+                  ))}
+                </select>
+              </label>
+            </label>
           </div>
         </div>
         <div>

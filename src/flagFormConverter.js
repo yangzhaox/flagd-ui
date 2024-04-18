@@ -16,7 +16,14 @@ export default function flagFormConverter(formData) {
                 }
                 return acc
             }, {}),
-            defaultVariant: formData.defaultVariant
+            defaultVariant: formData.defaultVariant,
+            targeting: {
+                if: [{
+                    [formData.condition?.operator]: [{
+                        var: formData.condition?.name
+                    }, formData.condition?.value]
+                }, formData.targetVariant]
+            }
         }
     }
 }
