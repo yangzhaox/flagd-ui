@@ -167,7 +167,8 @@ function App() {
                 <select id="operator"
                   value={condition.operator}
                   onChange={(e) => setCondition({ ...condition, operator: e.target.value })}>
-                  <option value="ends_with">Ends with</option>
+                  <option value="ends_with">ends with</option>
+                  <option value="in">in</option>
                 </select>
                 <input id="conditionValue" placeholder="Value"
                   value={condition.value}
@@ -187,7 +188,7 @@ function App() {
           </div>
         </div>
         <div>
-          <textarea id="json" readOnly value={generateJSON()} rows={20} cols={50} />
+          <textarea id="json" readOnly value={generateJSON()} rows={30} cols={50} />
         </div>
       </div>
     </>
