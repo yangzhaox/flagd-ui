@@ -59,34 +59,41 @@ describe("flagFormConverter", () => {
     })
 
     it("should return targeting as object", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey })
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true })
         expect(actual[testFlagKey].targeting).toBeInstanceOf(Object)
     })
 
-    it("should return if as array in targeting", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey })
+    it("should return targeting as empty object if hasTargeting is false", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: false })
+        expect(actual[testFlagKey].targeting).toStrictEqual({})  
+    })
+
+    it("should return if as array in targeting if hasTargeting is true", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true })
         expect(actual[testFlagKey].targeting.if).toBeInstanceOf(Array)       
     })
 
     it("should return operator in if", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, condition: { operator: "ends_with" }})
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, 
+            condition: { operator: "ends_with" }})
         expect(actual[testFlagKey].targeting.if[0]["ends_with"]).toBeInstanceOf(Array)
     })
 
     it("should return var under operator", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, 
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, 
             condition: { name: "email", operator: "ends_with" }})
         expect(actual[testFlagKey].targeting.if[0]["ends_with"][0].var).toBe("email")
     })
 
     it("should return value under operator", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, 
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, 
             condition: { value: "@ingen.com", operator: "ends_with" }})
         expect(actual[testFlagKey].targeting.if[0]["ends_with"][1]).toBe("@ingen.com")
     })
 
     it("should return targetVariant in if", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, targetVariant: "true"})
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true,
+            targetVariant: "true"})
         expect(actual[testFlagKey].targeting.if[1]).toBe("true")
     })
 })

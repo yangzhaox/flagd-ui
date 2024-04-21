@@ -17,13 +17,13 @@ export default function flagFormConverter(formData) {
                 return acc
             }, {}),
             defaultVariant: formData.defaultVariant,
-            targeting: {
+            targeting: formData.hasTargeting ? {
                 if: [{
                     [formData.condition?.operator]: [{
                         var: formData.condition?.name
                     }, formData.condition?.value]
                 }, formData.targetVariant]
-            }
+            } : {}
         }
     }
 }
