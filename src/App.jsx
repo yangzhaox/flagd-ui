@@ -2,6 +2,48 @@ import { useState } from "react"
 import "./App.css"
 import flagFormConverter from "./flagFormConverter"
 
+const IfConditionThen = ({ condition, setCondition, variants, targetVariant, setTargetVariant }) => {
+  return (
+    <div>
+      <label>If
+        <input id="conditionName" placeholder="Name"
+          value={condition.name}
+          onChange={(e) => setCondition({ ...condition, name: e.target.value })} />
+        <select id="operator"
+          value={condition.operator}
+          onChange={(e) => setCondition({
+            ...condition,
+            operator: e.target.value,
+            subOperator: e.target.value === "sem_ver" ? ">=" : ""
+          })}>
+          <option value="ends_with">ends with</option>
+          <option value="in">in</option>
+          <option value="sem_ver">semantic version</option>
+        </select>
+        {condition.operator === "sem_ver" && (
+          <select id="subOperator"
+            value={condition.subOperator}
+            onChange={(e) => setCondition({ ...condition, subOperator: e.target.value })}>
+            <option value=">=">&gt;=</option>
+          </select>)}
+        <input id="conditionValue" placeholder="Value"
+          value={condition.value}
+          onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
+      </label>
+      <br />
+      <label>Serve
+        <select id="targetVariant"
+          value={targetVariant}
+          onChange={(e) => setTargetVariant(e.target.value)}>
+          {variants.filter(variant => variant.name).map((variant, index) => (
+            <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+  )
+}
+
 function App() {
   const [flagKey, setFlagKey] = useState("test-feature")
   const [state, setState] = useState(false)
@@ -94,6 +136,7 @@ function App() {
     return JSON.stringify(convertedJson, null, 2)
   }
 
+
   return (
     <>
       <h1>flagd ui</h1>
@@ -159,41 +202,9 @@ function App() {
             <label htmlFor="hasTargeting">Targeting</label>
             <input id="hasTargeting" type="checkbox" checked={hasTargeting} onChange={(e) => setHasTargeting(e.target.checked)} />
             <br />
-            { hasTargeting && (<div>
-              <label>If
-                <input id="conditionName" placeholder="Name"
-                  value={condition.name}
-                  onChange={(e) => setCondition({ ...condition, name: e.target.value })} />
-                <select id="operator"
-                  value={condition.operator}
-                  onChange={(e) => setCondition({ ...condition, 
-                    operator: e.target.value, 
-                    subOperator: e.target.value === "sem_ver" ? ">=" : "" })}>
-                  <option value="ends_with">ends with</option>
-                  <option value="in">in</option>
-                  <option value="sem_ver">semantic version</option>
-                </select>
-                { condition.operator === "sem_ver" && (
-                <select id="subOperator"
-                  value={condition.subOperator}
-                  onChange={(e) => setCondition({ ...condition, subOperator: e.target.value })}>
-                  <option value=">=">&gt;=</option>
-                </select>)}
-                <input id="conditionValue" placeholder="Value"
-                  value={condition.value}
-                  onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
-              </label>
-              <br />
-              <label>Serve
-                <select id="targetVariant"
-                  value={targetVariant}
-                  onChange={(e) => setTargetVariant(e.target.value)}>
-                  {variants.filter(variant => variant.name).map((variant, index) => (
-                    <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
-                  ))}
-                </select>
-              </label>
-            </div>)}
+            {hasTargeting && (
+              <IfConditionThen condition={condition} setCondition={setCondition} 
+                variants={variants} targetVariant={targetVariant} setTargetVariant={setTargetVariant} />)}
           </div>
         </div>
         <div>
