@@ -31,7 +31,7 @@ const IfConditionThen = ({ condition, setCondition, variants, targetVariant, set
           onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
       </label>
       <br />
-      <label>Serve
+      <label>Then
         <select id="targetVariant"
           value={targetVariant}
           onChange={(e) => setTargetVariant(e.target.value)}>
