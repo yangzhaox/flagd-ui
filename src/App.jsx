@@ -166,10 +166,19 @@ function App() {
                   onChange={(e) => setCondition({ ...condition, name: e.target.value })} />
                 <select id="operator"
                   value={condition.operator}
-                  onChange={(e) => setCondition({ ...condition, operator: e.target.value })}>
+                  onChange={(e) => setCondition({ ...condition, 
+                    operator: e.target.value, 
+                    subOperator: e.target.value === "sem_ver" ? ">=" : "" })}>
                   <option value="ends_with">ends with</option>
                   <option value="in">in</option>
+                  <option value="sem_ver">semantic version</option>
                 </select>
+                { condition.operator === "sem_ver" && (
+                <select id="subOperator"
+                  value={condition.subOperator}
+                  onChange={(e) => setCondition({ ...condition, subOperator: e.target.value })}>
+                  <option value=">=">&gt;=</option>
+                </select>)}
                 <input id="conditionValue" placeholder="Value"
                   value={condition.value}
                   onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
