@@ -21,8 +21,13 @@ export default function flagFormConverter(formData) {
                 if: [{
                     [formData.condition?.operator]: [{
                         var: formData.condition?.name
-                    }, formData.condition?.value]
-                }, formData.targetVariant]
+                    }, 
+                    formData.condition?.operator === "in" ?
+                        formData.condition?.value?.split(",").map(e => e.trim()) :
+                        formData.condition?.value
+                    ]
+                },
+                formData.targetVariant]
             } : {}
         }
     }

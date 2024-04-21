@@ -91,6 +91,18 @@ describe("flagFormConverter", () => {
         expect(actual[testFlagKey].targeting.if[0]["ends_with"][1]).toBe("@ingen.com")
     })
 
+    it("should return array under operator if the value is comma separated", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, 
+            condition: { value: "us,ca", operator: "in" }})
+        expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual(["us", "ca"])
+    })
+
+    it("should return array of strings with trimmed spaces", () => {
+        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, 
+            condition: { value: "us, ca", operator: "in" }})
+        expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual(["us", "ca"])
+    })
+
     it("should return targetVariant in if", () => {
         const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true,
             targetVariant: "true"})
