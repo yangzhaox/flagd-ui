@@ -2,7 +2,7 @@ import { useState } from "react"
 import "./App.css"
 import flagFormConverter from "./flagFormConverter"
 
-const IfConditionThen = ({ index, condition, variants, targetVariant, handleRuleChange }) => {
+const IfThenRule = ({ index, condition, variants, targetVariant, handleRuleChange, removeRule }) => {
   return (
     <div>
       <label>{ index === 0 ? "If" : "Else If"}
@@ -36,6 +36,7 @@ const IfConditionThen = ({ index, condition, variants, targetVariant, handleRule
           ))}
         </select>
       </label>
+      <button id={`removeRule${index}`} onClick={() => removeRule(index)}>Remove</button>
     </div>
   )
 }
@@ -132,6 +133,19 @@ function App() {
     setRules(newRules)
   }
 
+  const addRule = () => {
+    const newRule = {
+      condition: { name: "", operator: "ends_with", subOperator: ">=", value: "" },
+      targetVariant: "true"
+    }
+    setRules([...rules, newRule])
+  }
+
+  const removeRule = (index) => {
+    const newRules = rules.filter((_, i) => i !== index)
+    setRules(newRules)
+  }
+
   const generateJSON = () => {
     const json = {
       flagKey,
@@ -212,9 +226,17 @@ function App() {
             <label htmlFor="hasTargeting">Targeting</label>
             <input id="hasTargeting" type="checkbox" checked={hasTargeting} onChange={(e) => setHasTargeting(e.target.checked)} />
             <br />
-            {hasTargeting && rules.map((rule, index) => (
-                <IfConditionThen key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
-                  variants={variants} handleRuleChange={handleRuleChange} />))}
+            { hasTargeting && 
+                rules.map((rule, index) => (
+                  <IfThenRule key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
+                    variants={variants} handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
+                  )
+                )
+            }
+            { hasTargeting && (
+                <button id="addRule" onClick={() => addRule()} >Add Rule</button>
+              )
+            }
           </div>
         </div>
         <div>
