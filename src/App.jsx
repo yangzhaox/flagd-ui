@@ -2,39 +2,35 @@ import { useState } from "react"
 import "./App.css"
 import flagFormConverter from "./flagFormConverter"
 
-const IfConditionThen = ({ condition, setCondition, variants, targetVariant, setTargetVariant }) => {
+const IfConditionThen = ({ index, condition, variants, targetVariant, handleRuleChange }) => {
   return (
     <div>
-      <label>If
-        <input id="conditionName" placeholder="Name"
+      <label>{ index === 0 ? "If" : "Else If"}
+        <input id={`condition${index}Name`} placeholder="Name"
           value={condition.name}
-          onChange={(e) => setCondition({ ...condition, name: e.target.value })} />
-        <select id="operator"
+          onChange={(e) => handleRuleChange(index, "name", e.target.value)} />
+        <select id={`operator${index}`}
           value={condition.operator}
-          onChange={(e) => setCondition({
-            ...condition,
-            operator: e.target.value,
-            subOperator: e.target.value === "sem_ver" ? ">=" : ""
-          })}>
+          onChange={(e) => handleRuleChange(index, "operator", e.target.value) }>
           <option value="ends_with">ends with</option>
           <option value="in">in</option>
           <option value="sem_ver">semantic version</option>
         </select>
         {condition.operator === "sem_ver" && (
-          <select id="subOperator"
+          <select id={`subOperator${index}`}
             value={condition.subOperator}
-            onChange={(e) => setCondition({ ...condition, subOperator: e.target.value })}>
+            onChange={(e) => handleRuleChange(index, "subOperator", e.target.value) }>
             <option value=">=">&gt;=</option>
           </select>)}
-        <input id="conditionValue" placeholder="Value"
+        <input id={`condition${index}Value`} placeholder="Value"
           value={condition.value}
-          onChange={(e) => setCondition({ ...condition, value: e.target.value })} />
+          onChange={(e) => handleRuleChange(index, "value", e.target.value)} />
       </label>
       <br />
       <label>Then
-        <select id="targetVariant"
+        <select id={`targetVariant${index}`}
           value={targetVariant}
-          onChange={(e) => setTargetVariant(e.target.value)}>
+          onChange={(e) => handleRuleChange(index, "", e.target.value)}>
           {variants.filter(variant => variant.name).map((variant, index) => (
             <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
           ))}
@@ -55,10 +51,10 @@ function App() {
   const [defaultVariant, setDefaultVariant] = useState("false")
   
   const [hasTargeting, setHasTargeting] = useState(false)
-  const [condition, setCondition] = useState({
-    name: "", operator: "ends_with", value: ""
-  })  
-  const [targetVariant, setTargetVariant] = useState("true")
+  const [rules, setRules] = useState([{
+    condition: { name: "", operator: "ends_with", subOperator: ">=", value: "" },
+    targetVariant: "true"
+  }])
 
   const handleTypeChange = (newType) => {
     setType(newType)
@@ -122,6 +118,20 @@ function App() {
     }
   }
 
+  const handleRuleChange = (index, key, value) => {
+    const newRules = rules.map((rule, i) => {
+      if (i === index) {
+        if (key !== "") {
+          return { condition: { ...rule.condition, [key]: value }, targetVariant: rule.targetVariant }
+        } else {
+          return { condition: rule.condition, targetVariant: value }
+        }
+      }
+      return rule
+    })
+    setRules(newRules)
+  }
+
   const generateJSON = () => {
     const json = {
       flagKey,
@@ -130,8 +140,7 @@ function App() {
       variants,
       defaultVariant,
       hasTargeting,
-      condition,
-      targetVariant
+      rules
     }
     const convertedJson = flagFormConverter(json)
     return JSON.stringify(convertedJson, null, 2)
@@ -203,9 +212,9 @@ function App() {
             <label htmlFor="hasTargeting">Targeting</label>
             <input id="hasTargeting" type="checkbox" checked={hasTargeting} onChange={(e) => setHasTargeting(e.target.checked)} />
             <br />
-            {hasTargeting && (
-              <IfConditionThen condition={condition} setCondition={setCondition} 
-                variants={variants} targetVariant={targetVariant} setTargetVariant={setTargetVariant} />)}
+            {hasTargeting && rules.map((rule, index) => (
+                <IfConditionThen key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
+                  variants={variants} handleRuleChange={handleRuleChange} />))}
           </div>
         </div>
         <div>

@@ -18,26 +18,26 @@ export default function flagFormConverter(formData) {
             }, {}),
             defaultVariant: formData.defaultVariant,
             targeting: formData.hasTargeting ? {
-                if: formData.condition?.operator === "sem_ver" ?
+                if: formData.rules[0]?.condition?.operator === "sem_ver" ?
                     [{
-                        [formData.condition?.operator]: [{
-                            var: formData.condition?.name
+                        [formData.rules[0]?.condition?.operator]: [{
+                            var: formData.rules[0]?.condition?.name
                         },
-                        formData.condition?.subOperator,
-                        formData.condition?.value
+                        formData.rules[0]?.condition?.subOperator,
+                        formData.rules[0]?.condition?.value
                         ]
                     },
-                    formData.targetVariant] :
+                    formData.rules[0]?.targetVariant] :
                     [{
-                        [formData.condition?.operator]: [{
-                            var: formData.condition?.name
+                        [formData.rules[0]?.condition?.operator]: [{
+                            var: formData.rules[0]?.condition?.name
                         },
-                        formData.condition?.operator === "in" ?
-                            formData.condition?.value?.split(",").map(e => e.trim()) :
-                            formData.condition?.value
+                        formData.rules[0]?.condition?.operator === "in" ?
+                            formData.rules[0]?.condition?.value?.split(",").map(e => e.trim()) :
+                            formData.rules[0]?.condition?.value
                         ]
                     },
-                    formData.targetVariant]
+                    formData.rules[0]?.targetVariant]
             } : {}
         }
     }
