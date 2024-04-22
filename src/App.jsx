@@ -43,7 +43,7 @@ const IfThenRule = ({ index, condition, variants, targetVariant, handleRuleChang
 
 function App() {
   const [flagKey, setFlagKey] = useState("test-feature")
-  const [state, setState] = useState(false)
+  const [state, setState] = useState(true)
   const [type, setType] = useState("boolean")
   const [variants, setVariants] = useState([
     { name: "true", value: true },
