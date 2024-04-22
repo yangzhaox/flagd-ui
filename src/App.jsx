@@ -52,11 +52,12 @@ function App() {
     { name: "true", value: true },
     { name: "false", value: false }
   ])
+  const [defaultVariant, setDefaultVariant] = useState("false")
+  
   const [hasTargeting, setHasTargeting] = useState(false)
   const [condition, setCondition] = useState({
     name: "", operator: "ends_with", value: ""
-  })
-  const [defaultVariant, setDefaultVariant] = useState("false")
+  })  
   const [targetVariant, setTargetVariant] = useState("true")
 
   const handleTypeChange = (newType) => {
