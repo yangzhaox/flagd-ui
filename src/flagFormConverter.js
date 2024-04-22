@@ -18,26 +18,27 @@ export default function flagFormConverter(formData) {
             }, {}),
             defaultVariant: formData.defaultVariant,
             targeting: formData.hasTargeting ? {
-                if: formData.rules[0]?.condition?.operator === "sem_ver" ?
-                    [{
-                        [formData.rules[0]?.condition?.operator]: [{
-                            var: formData.rules[0]?.condition?.name
-                        },
-                        formData.rules[0]?.condition?.subOperator,
-                        formData.rules[0]?.condition?.value
+                if: formData.rules.flatMap((rule) => [
+                    rule.condition.operator === "sem_ver" ? {
+                        [rule.condition.operator]: [
+                            {
+                                var: rule.condition.name
+                            },
+                            rule.condition.subOperator,
+                            rule.condition.value
+                        ]
+                    } : {
+                        [rule.condition.operator]: [
+                            {
+                                var: rule.condition.name
+                            },
+                            rule.condition.operator === "in" ?
+                                rule.condition.value?.split(",").map(e => e.trim()) :
+                                rule.condition.value
                         ]
                     },
-                    formData.rules[0]?.targetVariant] :
-                    [{
-                        [formData.rules[0]?.condition?.operator]: [{
-                            var: formData.rules[0]?.condition?.name
-                        },
-                        formData.rules[0]?.condition?.operator === "in" ?
-                            formData.rules[0]?.condition?.value?.split(",").map(e => e.trim()) :
-                            formData.rules[0]?.condition?.value
-                        ]
-                    },
-                    formData.rules[0]?.targetVariant]
+                    rule.targetVariant
+                ])
             } : {}
         }
     }

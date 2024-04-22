@@ -143,9 +143,17 @@ describe("flagFormConverter", () => {
     it("should return targetVariant in if", () => {
         const actual = flagFormConverter({
             flagKey: testFlagKey, hasTargeting: true,
-            rules: [{ targetVariant: "true" }]
+            rules: [{ condition: {}, targetVariant: "true" }]
         })
         expect(actual[testFlagKey].targeting.if[1]).toBe("true")
+    })
+
+    it("should process two rules", () => {
+        const actual = flagFormConverter({
+            flagKey: testFlagKey, hasTargeting: true,
+            rules: [{condition: { operator: "ends_with" }}, {condition: { operator: "ends_with" }}]
+        })
+        expect(actual[testFlagKey].targeting.if[2]["ends_with"]).toBeInstanceOf(Array)
     })
 })
 
