@@ -1,36 +1,36 @@
-import { describe, it, xit, expect } from 'vitest'
-import flagFormConverter from "./flagFormConverter"
+import { describe, it, expect } from 'vitest'
+import convertToFlagdFormat from "./convertToFlagdFormat"
 
-describe("flagFormConverter", () => {
+describe("convertToFlagdFormat", () => {
     const testFlagKey = "test-feature"
 
     it("should return empty object if flagKey is empty", () => {
-        const actual = flagFormConverter({ flagKey: "" })
+        const actual = convertToFlagdFormat({ flagKey: "" })
         expect(actual).toStrictEqual({})
     })
 
     it("should return flagKey in object if flagKey is not empty", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey })
         expect(actual).toHaveProperty(testFlagKey)
     })
 
     it("should convert state from true to ENABLED", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, state: true })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, state: true })
         expect(actual[testFlagKey].state).toBe("ENABLED")
     })
 
     it("should convert state from false to DISABLED", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, state: false })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, state: false })
         expect(actual[testFlagKey].state).toBe("DISABLED")
     })
 
     it("should return variants as empty object", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, variants: [] })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, variants: [] })
         expect(actual[testFlagKey].variants).toStrictEqual({})
     })
 
     it("should return 1 variant", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey,
             variants: [{ name: "true", value: true }]
         })
@@ -38,7 +38,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return 2 variants", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey,
             variants: [{ name: "true", value: true }, { name: "false", value: false }]
         })
@@ -46,7 +46,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return json object if variant value is valid json", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, type: "object",
             variants: [{ name: "foo", value: "{}" }]
         })
@@ -54,7 +54,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return empty string if variant value is not valid json", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, type: "object",
             variants: [{ name: "foo", value: "{a}" }]
         })
@@ -62,12 +62,12 @@ describe("flagFormConverter", () => {
     })
 
     it("should return defaultVariant", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, defaultVariant: "true" })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, defaultVariant: "true" })
         expect(actual[testFlagKey].defaultVariant).toBe("true")
     })
 
     it("should return targeting as object", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: []
         })
@@ -75,17 +75,17 @@ describe("flagFormConverter", () => {
     })
 
     it("should return targeting as empty object if hasTargeting is false", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: false })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, hasTargeting: false })
         expect(actual[testFlagKey].targeting).toStrictEqual({})
     })
 
     it("should return if as array in targeting if hasTargeting is true", () => {
-        const actual = flagFormConverter({ flagKey: testFlagKey, hasTargeting: true, rules: [] })
+        const actual = convertToFlagdFormat({ flagKey: testFlagKey, hasTargeting: true, rules: [] })
         expect(actual[testFlagKey].targeting.if).toBeInstanceOf(Array)
     })
 
     it("should return operator in if", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{condition: { operator: "ends_with" }}]
         })
@@ -93,7 +93,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return var under operator", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { name: "email", operator: "ends_with" } }]
         })
@@ -101,7 +101,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return value under operator", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { value: "@ingen.com", operator: "ends_with" } }]
         })
@@ -109,7 +109,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return array under operator if the value is comma separated", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { value: "us,ca", operator: "in" } }]
         })
@@ -117,7 +117,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return array of strings with trimmed spaces", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { value: "us, ca", operator: "in" } }]
         })
@@ -125,7 +125,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return subOperator if it's sementic version comparison", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { operator: "sem_ver", subOperator: ">=" } }]
         })
@@ -133,7 +133,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return value as last element if it's sementic version comparison", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: { operator: "sem_ver", subOperator: ">=", value: "1.7.0" } }]
         })
@@ -141,7 +141,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should return targetVariant in if", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{ condition: {}, targetVariant: "true" }]
         })
@@ -149,7 +149,7 @@ describe("flagFormConverter", () => {
     })
 
     it("should process two rules", () => {
-        const actual = flagFormConverter({
+        const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
             rules: [{condition: { operator: "ends_with" }}, {condition: { operator: "ends_with" }}]
         })

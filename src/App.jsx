@@ -1,6 +1,6 @@
 import { useState } from "react"
 import "./App.css"
-import flagFormConverter from "./flagFormConverter"
+import convertToFlagdFormat from "./convertToFlagdFormat"
 
 const IfThenRule = ({ index, condition, variants, targetVariant, handleRuleChange, removeRule }) => {
   return (
@@ -156,7 +156,7 @@ function App() {
       hasTargeting,
       rules
     }
-    const convertedJson = flagFormConverter(json)
+    const convertedJson = convertToFlagdFormat(json)
     return JSON.stringify(convertedJson, null, 2)
   }
 
