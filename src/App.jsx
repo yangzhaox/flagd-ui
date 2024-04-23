@@ -3,9 +3,24 @@ import convertToFlagdFormat from "./convertToFlagdFormat"
 import "./App.css"
 
 const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
+
+  const label = index === 0 ? "If" : "Else If"
+
+  const semVerSubOperatorBlock = rule.condition.operator === "sem_ver" && (
+    <select id={`subOperator${index}`}
+      value={rule.condition.subOperator}
+      onChange={(e) => handleRuleChange(index, "subOperator", e.target.value)}>
+      <option value=">=">&gt;=</option>
+    </select>
+  )
+
+  const variantOptionsBlock = variants.filter(variant => variant.name).map((variant, index) => (
+    <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
+  ))
+
   return (
     <div>
-      <label>{index === 0 ? "If" : "Else If"}
+      <label>{label}
         <input id={`condition${index}Name`} placeholder="Name"
           value={rule.condition.name}
           onChange={(e) => handleRuleChange(index, "name", e.target.value)} />
@@ -16,12 +31,7 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
           <option value="in">in</option>
           <option value="sem_ver">semantic version</option>
         </select>
-        {rule.condition.operator === "sem_ver" && (
-          <select id={`subOperator${index}`}
-            value={rule.condition.subOperator}
-            onChange={(e) => handleRuleChange(index, "subOperator", e.target.value)}>
-            <option value=">=">&gt;=</option>
-          </select>)}
+        {semVerSubOperatorBlock}
         <input id={`condition${index}Value`} placeholder="Value"
           value={rule.condition.value}
           onChange={(e) => handleRuleChange(index, "value", e.target.value)} />
@@ -31,9 +41,7 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
         <select id={`targetVariant${index}`}
           value={rule.targetVariant}
           onChange={(e) => handleRuleChange(index, "", e.target.value)}>
-          {variants.filter(variant => variant.name).map((variant, index) => (
-            <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
-          ))}
+          {variantOptionsBlock}
         </select>
       </label>
       <button id={`removeRule${index}`} onClick={() => removeRule(index)}>Remove</button>
@@ -160,25 +168,33 @@ function App() {
     return JSON.stringify(convertedJson, null, 2)
   }
 
+  const booleanVariantBlock = type === "boolean" ?
+    <select id={`variant${index}Value`} value={variant.value.toString()}
+      onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
+      <option value="true">true</option>
+      <option value="false">false</option>
+    </select> : null
+
+  const stringVariantBlock = type === "string" ?
+    <input id={`variant${index}Value`} placeholder="Value" value={variant.value}
+      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null
+
+  const numberVariantBlock = type === "number" ?
+    <input id={`variant${index}Value`} type="number" value={variant.value}
+      onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null
+
+  const objectVariantBlock = type === "object" ?
+    <input id={`variant${index}Value`} value={variant.value}
+      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null
+
   const variantsBlock = variants.map((variant, index) => (
     <div key={`variant${index}`}>
       <input id={`variant${index}Name`} placeholder="Name" value={variant.name}
         onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
-      {type === "boolean" ?
-        <select id={`variant${index}Value`} value={variant.value.toString()}
-          onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
-          <option value="true">true</option>
-          <option value="false">false</option>
-        </select> : null}
-      {type === "string" ?
-        <input id={`variant${index}Value`} placeholder="Value" value={variant.value}
-          onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
-      {type === "number" ?
-        <input id={`variant${index}Value`} type="number" value={variant.value}
-          onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null}
-      {type === "object" ?
-        <input id={`variant${index}Value`} value={variant.value}
-          onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
+      {booleanVariantBlock}
+      {stringVariantBlock}
+      {numberVariantBlock}
+      {objectVariantBlock}
       <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
     </div>
   ))
