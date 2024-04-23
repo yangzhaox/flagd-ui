@@ -2,34 +2,34 @@ import { useState } from "react"
 import convertToFlagdFormat from "./convertToFlagdFormat"
 import "./App.css"
 
-const Rule = ({ index, condition, variants, targetVariant, handleRuleChange, removeRule }) => {
+const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
   return (
     <div>
       <label>{index === 0 ? "If" : "Else If"}
         <input id={`condition${index}Name`} placeholder="Name"
-          value={condition.name}
+          value={rule.condition.name}
           onChange={(e) => handleRuleChange(index, "name", e.target.value)} />
         <select id={`operator${index}`}
-          value={condition.operator}
+          value={rule.condition.operator}
           onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
           <option value="ends_with">ends with</option>
           <option value="in">in</option>
           <option value="sem_ver">semantic version</option>
         </select>
-        {condition.operator === "sem_ver" && (
+        {rule.condition.operator === "sem_ver" && (
           <select id={`subOperator${index}`}
-            value={condition.subOperator}
+            value={rule.condition.subOperator}
             onChange={(e) => handleRuleChange(index, "subOperator", e.target.value)}>
             <option value=">=">&gt;=</option>
           </select>)}
         <input id={`condition${index}Value`} placeholder="Value"
-          value={condition.value}
+          value={rule.condition.value}
           onChange={(e) => handleRuleChange(index, "value", e.target.value)} />
       </label>
       <br />
       <label>Then
         <select id={`targetVariant${index}`}
-          value={targetVariant}
+          value={rule.targetVariant}
           onChange={(e) => handleRuleChange(index, "", e.target.value)}>
           {variants.filter(variant => variant.name).map((variant, index) => (
             <option key={`targetVariant-${index}`} value={variant.name}>{variant.name}</option>
@@ -188,8 +188,8 @@ function App() {
   ))
 
   const rulesBlock = hasTargeting && rules.map((rule, index) => (
-    <Rule key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
-      variants={variants} handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
+    <Rule key={index} index={index} variants={variants} rule={rule}
+      handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
   ))
 
   const addRuleButton = hasTargeting && (
