@@ -1,45 +1,65 @@
 export default function flagFormConverter(formData) {
     if (!formData.flagKey) return {}
 
+    const state = formData.state ? "ENABLED" : "DISABLED"
+
+    const variants = formData.variants?.reduce((acc, v) => {
+        if (formData.type === "object") {
+            try {
+                acc[v.name] = JSON.parse(v.value)
+            } catch (e) {
+                acc[v.name] = ""
+            }
+        } else {
+            acc[v.name] = v.value
+        }
+        return acc
+    }, {})
+
+    const defaultVariant = formData.defaultVariant
+
+    const getSemVerCondition = (condition) => {
+        return {
+            [condition.operator]: [
+                {
+                    var: condition.name
+                },
+                condition.subOperator,
+                condition.value
+            ]
+        }
+    }
+
+    const getCondition = (condition) => {
+        return {
+            [condition.operator]: [
+                {
+                    var: condition.name
+                },
+                condition.operator === "in" ?
+                    commaSeparatedStringtoArray(condition.value) :
+                    condition.value
+            ]
+        }
+    }
+
+    const commaSeparatedStringtoArray = (csv) => csv?.split(",").map(e => e.trim())
+
+    const ifArray = formData.rules?.flatMap((rule) => [
+        rule.condition.operator === "sem_ver" ?
+            getSemVerCondition(rule.condition) :
+            getCondition(rule.condition),
+        rule.targetVariant
+    ])
+
+    const targeting = formData.hasTargeting ? { if: ifArray } : {}
+
     return {
         [formData.flagKey]: {
-            state: formData.state ? "ENABLED" : "DISABLED",
-            variants: formData.variants?.reduce((acc, v) => {
-                if (formData.type === "object") {
-                    try {
-                        acc[v.name] = JSON.parse(v.value)
-                    } catch (e) {
-                        acc[v.name] = ""
-                    }
-                } else {
-                    acc[v.name] = v.value
-                }
-                return acc
-            }, {}),
-            defaultVariant: formData.defaultVariant,
-            targeting: formData.hasTargeting ? {
-                if: formData.rules.flatMap((rule) => [
-                    rule.condition.operator === "sem_ver" ? {
-                        [rule.condition.operator]: [
-                            {
-                                var: rule.condition.name
-                            },
-                            rule.condition.subOperator,
-                            rule.condition.value
-                        ]
-                    } : {
-                        [rule.condition.operator]: [
-                            {
-                                var: rule.condition.name
-                            },
-                            rule.condition.operator === "in" ?
-                                rule.condition.value?.split(",").map(e => e.trim()) :
-                                rule.condition.value
-                        ]
-                    },
-                    rule.targetVariant
-                ])
-            } : {}
+            state,
+            variants,
+            defaultVariant,
+            targeting
         }
     }
 }
