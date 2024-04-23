@@ -1,17 +1,17 @@
 import { useState } from "react"
-import "./App.css"
 import convertToFlagdFormat from "./convertToFlagdFormat"
+import "./App.css"
 
-const IfThenRule = ({ index, condition, variants, targetVariant, handleRuleChange, removeRule }) => {
+const Rule = ({ index, condition, variants, targetVariant, handleRuleChange, removeRule }) => {
   return (
     <div>
-      <label>{ index === 0 ? "If" : "Else If"}
+      <label>{index === 0 ? "If" : "Else If"}
         <input id={`condition${index}Name`} placeholder="Name"
           value={condition.name}
           onChange={(e) => handleRuleChange(index, "name", e.target.value)} />
         <select id={`operator${index}`}
           value={condition.operator}
-          onChange={(e) => handleRuleChange(index, "operator", e.target.value) }>
+          onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
           <option value="ends_with">ends with</option>
           <option value="in">in</option>
           <option value="sem_ver">semantic version</option>
@@ -19,7 +19,7 @@ const IfThenRule = ({ index, condition, variants, targetVariant, handleRuleChang
         {condition.operator === "sem_ver" && (
           <select id={`subOperator${index}`}
             value={condition.subOperator}
-            onChange={(e) => handleRuleChange(index, "subOperator", e.target.value) }>
+            onChange={(e) => handleRuleChange(index, "subOperator", e.target.value)}>
             <option value=">=">&gt;=</option>
           </select>)}
         <input id={`condition${index}Value`} placeholder="Value"
@@ -50,7 +50,7 @@ function App() {
     { name: "false", value: false }
   ])
   const [defaultVariant, setDefaultVariant] = useState("false")
-  
+
   const [hasTargeting, setHasTargeting] = useState(false)
   const [rules, setRules] = useState([{
     condition: { name: "", operator: "ends_with", subOperator: ">=", value: "" },
@@ -160,6 +160,41 @@ function App() {
     return JSON.stringify(convertedJson, null, 2)
   }
 
+  const variantsBlock = variants.map((variant, index) => (
+    <div key={`variant${index}`}>
+      <input id={`variant${index}Name`} placeholder="Name" value={variant.name}
+        onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
+      {type === "boolean" ?
+        <select id={`variant${index}Value`} value={variant.value.toString()}
+          onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
+          <option value="true">true</option>
+          <option value="false">false</option>
+        </select> : null}
+      {type === "string" ?
+        <input id={`variant${index}Value`} placeholder="Value" value={variant.value}
+          onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
+      {type === "number" ?
+        <input id={`variant${index}Value`} type="number" value={variant.value}
+          onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null}
+      {type === "object" ?
+        <input id={`variant${index}Value`} value={variant.value}
+          onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
+      <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
+    </div>
+  ))
+
+  const variantOptionsBlock = variants.filter(variant => variant.name).map((variant, index) => (
+    <option key={`variant-${index}`} value={variant.name}>{variant.name}</option>
+  ))
+
+  const rulesBlock = hasTargeting && rules.map((rule, index) => (
+    <Rule key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
+      variants={variants} handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
+  ))
+
+  const addRuleButton = hasTargeting && (
+    <button id="addRule" onClick={() => addRule()} >Add Rule</button>
+  )
 
   return (
     <>
@@ -168,15 +203,18 @@ function App() {
         <div className="left">
           <div>
             <label htmlFor="flagKey">Flag Key</label>
-            <input id="flagKey" value={flagKey} onChange={(e) => setFlagKey(e.target.value)} />
+            <input id="flagKey" value={flagKey}
+              onChange={(e) => setFlagKey(e.target.value)} />
           </div>
           <div>
             <label htmlFor="state">State</label>
-            <input id="state" type="checkbox" checked={state} onChange={(e) => setState(e.target.checked)} />
+            <input id="state" type="checkbox" checked={state}
+              onChange={(e) => setState(e.target.checked)} />
           </div>
           <div>
             <label htmlFor="type">Type</label>
-            <select id="type" value={type} onChange={(e) => handleTypeChange(e.target.value)}>
+            <select id="type" value={type}
+              onChange={(e) => handleTypeChange(e.target.value)}>
               <option value="boolean">boolean</option>
               <option value="string">string</option>
               <option value="number">number</option>
@@ -186,28 +224,7 @@ function App() {
           <div>
             <label>Variants
               <div>
-                {variants.map((variant, index) => (
-                  <div key={`variant${index}`}>
-                    <input id={`variant${index}Name`} placeholder="Name" value={variant.name}
-                      onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
-                    {type === "boolean" ?
-                      <select id={`variant${index}Value`} value={variant.value.toString()}
-                        onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
-                        <option value="true">true</option>
-                        <option value="false">false</option>
-                      </select> : null}
-                    {type === "string" ?
-                      <input id={`variant${index}Value`} placeholder="Value" value={variant.value}
-                        onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
-                    {type === "number" ?
-                      <input id={`variant${index}Value`} type="number" value={variant.value}
-                        onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null}
-                    {type === "object" ?
-                      <input id={`variant${index}Value`} value={variant.value}
-                        onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null}
-                    <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
-                  </div>
-                ))}
+                {variantsBlock}
                 <button id="addVariant" onClick={addVariant}>Add Variant</button>
               </div>
             </label>
@@ -217,26 +234,16 @@ function App() {
             <select id="defaultVariant"
               value={defaultVariant}
               onChange={(e) => setDefaultVariant(e.target.value)}>
-              {variants.filter(variant => variant.name).map((variant, index) => (
-                <option key={`variant-${index}`} value={variant.name}>{variant.name}</option>
-              ))}
+              {variantOptionsBlock}
             </select>
           </div>
           <div>
             <label htmlFor="hasTargeting">Targeting</label>
-            <input id="hasTargeting" type="checkbox" checked={hasTargeting} onChange={(e) => setHasTargeting(e.target.checked)} />
+            <input id="hasTargeting" type="checkbox" checked={hasTargeting}
+              onChange={(e) => setHasTargeting(e.target.checked)} />
             <br />
-            { hasTargeting && 
-                rules.map((rule, index) => (
-                  <IfThenRule key={index} index={index} condition={rule.condition} targetVariant={rule.targetVariant}
-                    variants={variants} handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
-                  )
-                )
-            }
-            { hasTargeting && (
-                <button id="addRule" onClick={() => addRule()} >Add Rule</button>
-              )
-            }
+            {rulesBlock}
+            {addRuleButton}
           </div>
         </div>
         <div>
