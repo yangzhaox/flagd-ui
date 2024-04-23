@@ -168,33 +168,33 @@ function App() {
     return JSON.stringify(convertedJson, null, 2)
   }
 
-  const booleanVariantBlock = type === "boolean" ?
+  const getBooleanVariantBlock = (variant, index) => ( type === "boolean" ?
     <select id={`variant${index}Value`} value={variant.value.toString()}
       onChange={(e) => handleVariantChange(index, "value", e.target.value === "true")}>
       <option value="true">true</option>
       <option value="false">false</option>
-    </select> : null
+    </select> : null )
 
-  const stringVariantBlock = type === "string" ?
+  const getStringVariantBlock = (variant, index) => ( type === "string" ?
     <input id={`variant${index}Value`} placeholder="Value" value={variant.value}
-      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null
+      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null )
 
-  const numberVariantBlock = type === "number" ?
+  const getNumberVariantBlock = (variant, index) => ( type === "number" ?
     <input id={`variant${index}Value`} type="number" value={variant.value}
-      onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null
+      onChange={(e) => handleVariantChange(index, "value", Number(e.target.value))} /> : null )
 
-  const objectVariantBlock = type === "object" ?
+  const getObjectVariantBlock = (variant, index) => ( type === "object" ?
     <input id={`variant${index}Value`} value={variant.value}
-      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null
+      onChange={(e) => handleVariantChange(index, "value", e.target.value)} /> : null )
 
   const variantsBlock = variants.map((variant, index) => (
     <div key={`variant${index}`}>
       <input id={`variant${index}Name`} placeholder="Name" value={variant.name}
         onChange={(e) => handleVariantChange(index, "name", e.target.value)} />
-      {booleanVariantBlock}
-      {stringVariantBlock}
-      {numberVariantBlock}
-      {objectVariantBlock}
+      {getBooleanVariantBlock(variant, index)}
+      {getStringVariantBlock(variant, index)}
+      {getNumberVariantBlock(variant, index)}
+      {getObjectVariantBlock(variant, index)}
       <button id="removeVariant" onClick={() => removeVariant(index)}>Remove</button>
     </div>
   ))
