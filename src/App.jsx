@@ -35,19 +35,23 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
         <select id={`operator${index}`}
           value={rule.condition.operator}
           onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
-          <option value="ends_with">Ends with</option>
+          {/* String */}
           <option value="starts_with">Starts with</option>
+          <option value="ends_with">Ends with</option>
           <option value="in_string">Contains in string</option>
           <option value="not_in_string">Not contains in string</option>
+          <option value="sem_ver">Semantic version</option>
+          {/* Array */}
           <option value="in_list">In a list</option>
           <option value="not_in_list">Not in a list</option>
-          <option value="sem_ver">Semantic version</option>
+          {/* Boolean */}
           <option value="==">Equals</option>
           <option value="===">Strict equals</option>
           <option value="!=">Not equals</option>
           <option value="!==">Not strict equals</option>
           <option value="!!">Exists</option>
           <option value="!">Not exists</option>
+          {/* Numeric */}
           <option value=">">Greater than</option>
           <option value=">=">Greater than or equals</option>
           <option value="<">Less than</option>
