@@ -36,6 +36,9 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
           value={rule.condition.operator}
           onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
           <option value="ends_with">Ends with</option>
+          <option value="starts_with">Starts with</option>
+          <option value="in_string">Contains in string</option>
+          <option value="not_in_string">Not contains in string</option>
           <option value="in_list">In a list</option>
           <option value="not_in_list">Not in a list</option>
           <option value="sem_ver">Semantic version</option>
@@ -49,8 +52,6 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
           <option value=">=">Greater than or equals</option>
           <option value="<">Less than</option>
           <option value="<=">Less than or equals</option>
-          <option value="in_string">Contains in string</option>
-          <option value="not_in_string">Not contains in string</option>
         </select>
         {semVerSubOperatorBlock}
         <input id={`condition${index}Value`} placeholder="Value"
