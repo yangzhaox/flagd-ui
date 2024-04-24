@@ -31,26 +31,28 @@ export default function flagFormConverter(formData) {
     }
 
     const getCondition = (condition) => {
-        const operator = condition.operator === "not_in" || 
+        const operator = condition.operator === "in_list" ||
+                         condition.operator === "not_in_list" || 
                          condition.operator === "in_string" ||
                          condition.operator === "not_in_string" ? 
-                         "in" : condition.operator
+                         "in" :
+                         condition.operator
         const rule = {
             [operator]: [
-                {
-                    var: condition.name
-                }, 
-                condition.operator === "in" ||
-                condition.operator === "not_in" ?
-                    commaSeparatedStringtoArray(condition.value) :
+                { var: condition.name }, 
+                condition.operator === "in_list" ||
+                condition.operator === "not_in_list" ?
+                    commaSeparatedStringtoList(condition.value) :
                     condition.value
             ]
         }
-        return condition.operator === "not_in" || 
-               condition.operator === "not_in_string" ? { "!": rule } : rule
+        return condition.operator === "not_in_list" || 
+               condition.operator === "not_in_string" ? 
+                   { "!": rule } : 
+                   rule
     }
 
-    const commaSeparatedStringtoArray = (csv) => csv?.split(",").map(e => e.trim())
+    const commaSeparatedStringtoList = (csv) => csv?.split(",").map(e => e.trim())
 
     const ifArray = formData.rules?.flatMap((rule) => [
         rule.condition.operator === "sem_ver" ?

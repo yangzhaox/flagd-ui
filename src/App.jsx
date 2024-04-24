@@ -36,8 +36,8 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
           value={rule.condition.operator}
           onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
           <option value="ends_with">Ends with</option>
-          <option value="in">In a list</option>
-          <option value="not_in">Not in a list</option>
+          <option value="in_list">In a list</option>
+          <option value="not_in_list">Not in a list</option>
           <option value="sem_ver">Semantic version</option>
           <option value="==">Equals</option>
           <option value="===">Strict equals</option>

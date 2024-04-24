@@ -111,7 +111,7 @@ describe("convertToFlagdFormat", () => {
     it("should return array under operator if the value is comma separated", () => {
         const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
-            rules: [{ condition: { value: "us,ca", operator: "in" } }]
+            rules: [{ condition: { value: "us,ca", operator: "in_list" } }]
         })
         expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual(["us", "ca"])
     })
@@ -119,7 +119,7 @@ describe("convertToFlagdFormat", () => {
     it("should return array of strings with trimmed spaces", () => {
         const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
-            rules: [{ condition: { value: "us, ca", operator: "in" } }]
+            rules: [{ condition: { value: "us, ca", operator: "in_list" } }]
         })
         expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual(["us", "ca"])
     })
@@ -127,7 +127,7 @@ describe("convertToFlagdFormat", () => {
     it("should handle not_in operator", () => {
         const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,
-            rules: [{ condition: { value: "us,ca", operator: "not_in" } }]
+            rules: [{ condition: { value: "us,ca", operator: "not_in_list" } }]
         })
         expect(actual[testFlagKey].targeting.if[0]["!"]["in"][1]).toStrictEqual(["us", "ca"])
     })
