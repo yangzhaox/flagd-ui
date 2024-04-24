@@ -11,6 +11,14 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
       value={rule.condition.subOperator}
       onChange={(e) => handleRuleChange(index, "subOperator", e.target.value)}>
       <option value=">=">&gt;=</option>
+      {/* Range specifiers: "=", "!=", ">", "<", ">=", "<=", "~" (match minor version), "^" (match major version). */}
+      <option value="<=">&lt;=</option>
+      <option value="~">~(minor)</option>
+      <option value="^">^(major)</option>
+      <option value="=">=</option>
+      <option value="!=">!=</option>
+      <option value=">">&gt;</option>
+      <option value="<">&lt;</option>
     </select>
   )
 
