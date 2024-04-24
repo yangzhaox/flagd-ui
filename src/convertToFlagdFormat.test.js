@@ -155,5 +155,15 @@ describe("convertToFlagdFormat", () => {
         })
         expect(actual[testFlagKey].targeting.if[2]["ends_with"]).toBeInstanceOf(Array)
     })
+
+    it("should return default rule", () => {
+        const actual = convertToFlagdFormat({
+            flagKey: testFlagKey, hasTargeting: true,
+            rules: [{ condition: {}, targetVariant: "true" }],
+            hasDefaultRule: true,
+            defaultRule: "false"
+        })
+        expect(actual[testFlagKey].targeting.if[2]).toBe("false")
+    })
 })
 

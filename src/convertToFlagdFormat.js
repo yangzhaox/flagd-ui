@@ -52,6 +52,10 @@ export default function flagFormConverter(formData) {
         rule.targetVariant
     ])
 
+    if (formData.hasDefaultRule) {
+        ifArray.push(formData.defaultRule)
+    }
+
     const targeting = formData.hasTargeting ? { if: ifArray } : {}
 
     return {

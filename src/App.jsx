@@ -64,6 +64,8 @@ function App() {
     condition: { name: "", operator: "ends_with", subOperator: ">=", value: "" },
     targetVariant: "true"
   }])
+  const [hasDefaultRule, setHasDefaultRule] = useState(false)
+  const [defaultRule, setDefaultRule] = useState("false")
 
   const handleTypeChange = (newType) => {
     setType(newType)
@@ -162,7 +164,9 @@ function App() {
       variants,
       defaultVariant,
       hasTargeting,
-      rules
+      rules,
+      hasDefaultRule,
+      defaultRule
     }
     const convertedJson = convertToFlagdFormat(json)
     return JSON.stringify(convertedJson, null, 2)
@@ -208,8 +212,29 @@ function App() {
       handleRuleChange={handleRuleChange} removeRule={() => removeRule(index)} />
   ))
 
+  const defaultRuleBlock = hasTargeting && hasDefaultRule && (
+    <>
+    <label>Else
+      <select id="defaultRule"
+        value={defaultRule}
+        onChange={(e) => setDefaultRule(e.target.value)}>
+        {variantOptionsBlock}
+      </select>
+    </label>
+    <br/>
+    </>
+  )
+
   const addRuleButton = hasTargeting && (
     <button id="addRule" onClick={() => addRule()} >Add Rule</button>
+  )
+
+  const defaultRuleCheckbox = hasTargeting && (
+    <>
+      <input id="defaultRule" type="checkbox" checked={hasDefaultRule} 
+        onClick={(e) => setHasDefaultRule(e.target.checked)} />
+      <label htmlFor="defaultRule">Default Rule</label>
+    </>
   )
 
   return (
@@ -259,7 +284,9 @@ function App() {
               onChange={(e) => setHasTargeting(e.target.checked)} />
             <br />
             {rulesBlock}
+            {defaultRuleBlock}
             {addRuleButton}
+            {defaultRuleCheckbox}
           </div>
         </div>
         <div>
