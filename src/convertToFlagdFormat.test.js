@@ -124,6 +124,30 @@ describe("convertToFlagdFormat", () => {
         expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual(["us", "ca"])
     })
 
+    it("should handle not_in operator", () => {
+        const actual = convertToFlagdFormat({
+            flagKey: testFlagKey, hasTargeting: true,
+            rules: [{ condition: { value: "us,ca", operator: "not_in" } }]
+        })
+        expect(actual[testFlagKey].targeting.if[0]["!"]["in"][1]).toStrictEqual(["us", "ca"])
+    })
+
+    it("should handle in_string operator", () => {
+        const actual = convertToFlagdFormat({
+            flagKey: testFlagKey, hasTargeting: true,
+            rules: [{ condition: { value: "string", operator: "in_string" } }]
+        })
+        expect(actual[testFlagKey].targeting.if[0]["in"][1]).toStrictEqual("string")
+    })
+
+    it("should handle not_in_string operator", () => {
+        const actual = convertToFlagdFormat({
+            flagKey: testFlagKey, hasTargeting: true,
+            rules: [{ condition: { value: "string", operator: "not_in_string" } }]
+        })
+        expect(actual[testFlagKey].targeting.if[0]["!"]["in"][1]).toStrictEqual("string")
+    })
+
     it("should return subOperator if it's sementic version comparison", () => {
         const actual = convertToFlagdFormat({
             flagKey: testFlagKey, hasTargeting: true,

@@ -49,8 +49,8 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
           <option value=">=">Greater than or equals</option>
           <option value="<">Less than</option>
           <option value="<=">Less than or equals</option>
-          <option value="in_string">Contains</option>
-          <option value="not_in_string">Not contains</option>
+          <option value="in_string">Contains in string</option>
+          <option value="not_in_string">Not contains in string</option>
         </select>
         {semVerSubOperatorBlock}
         <input id={`condition${index}Value`} placeholder="Value"

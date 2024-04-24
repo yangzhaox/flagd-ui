@@ -31,16 +31,23 @@ export default function flagFormConverter(formData) {
     }
 
     const getCondition = (condition) => {
-        return {
-            [condition.operator]: [
+        const operator = condition.operator === "not_in" || 
+                         condition.operator === "in_string" ||
+                         condition.operator === "not_in_string" ? 
+                         "in" : condition.operator
+        const rule = {
+            [operator]: [
                 {
                     var: condition.name
-                },
-                condition.operator === "in" ?
+                }, 
+                condition.operator === "in" ||
+                condition.operator === "not_in" ?
                     commaSeparatedStringtoArray(condition.value) :
                     condition.value
             ]
         }
+        return condition.operator === "not_in" || 
+               condition.operator === "not_in_string" ? { "!": rule } : rule
     }
 
     const commaSeparatedStringtoArray = (csv) => csv?.split(",").map(e => e.trim())
