@@ -35,9 +35,22 @@ const Rule = ({ index, variants, rule, handleRuleChange, removeRule }) => {
         <select id={`operator${index}`}
           value={rule.condition.operator}
           onChange={(e) => handleRuleChange(index, "operator", e.target.value)}>
-          <option value="ends_with">ends with</option>
-          <option value="in">in</option>
-          <option value="sem_ver">semantic version</option>
+          <option value="ends_with">Ends with</option>
+          <option value="in">In a list</option>
+          <option value="not_in">Not in a list</option>
+          <option value="sem_ver">Semantic version</option>
+          <option value="==">Equals</option>
+          <option value="===">Strict equals</option>
+          <option value="!=">Not equals</option>
+          <option value="!==">Not strict equals</option>
+          <option value="!!">Exists</option>
+          <option value="!">Not exists</option>
+          <option value=">">Greater than</option>
+          <option value=">=">Greater than or equals</option>
+          <option value="<">Less than</option>
+          <option value="<=">Less than or equals</option>
+          <option value="in_string">Contains</option>
+          <option value="not_in_string">Not contains</option>
         </select>
         {semVerSubOperatorBlock}
         <input id={`condition${index}Value`} placeholder="Value"
