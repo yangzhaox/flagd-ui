@@ -1,4 +1,4 @@
-export default function flagFormConverter(formData) {
+export default function convertToFlagdFormat(formData) {
     if (!formData.flagKey) return {}
 
     const state = formData.state ? "ENABLED" : "DISABLED"
